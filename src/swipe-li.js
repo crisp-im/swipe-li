@@ -51,7 +51,7 @@ angular.module('swipeLi')
 			      angular.element(pane).css({width : pane_width + 'px'});
 			    });
 			    angular.element(container).css({width : pane_width * pane_count + 'px'});
-			  };
+			  }
 
 			  // Show pane by index
 			  scope.showPane = function (index, animate) {
@@ -68,22 +68,15 @@ angular.module('swipeLi')
 			    if (animate) {
 			      container.addClass('animate');
 			    }
-			    if (Modernizr.csstransforms3d) {
-			      container.css('transform', 'translate3d(' + percent + '%,0,0) scale3d(1,1,1)');
-			    } else if (Modernizr.csstransforms) {
-			      container.css('transform', 'translate(' + percent + '%,0)');
-			    } else {
-			      var px = ((pane_width * pane_count) / 100) * percent;
-			      container.css('left', px + 'px');
-			    }
-			  }
+
+			    container.css('transform', 'translate3d(' + percent + '%,0,0) scale3d(1,1,1)');
+			  };
 
 			  // Handle hammertime touch events
 			  scope.handleHammer = function (ev) {
 			    // Disable browser scrolling
 			    ev.gesture.preventDefault();
 			    // Check to see if disabled or not
-			    if (scope.$eval(iAttrs.disabled)) return;
 
 			    switch (ev.type) {
 				    case 'dragright':
@@ -93,9 +86,9 @@ angular.module('swipeLi')
 				      var drag_offset = ((100 / pane_width) * ev.gesture.deltaX) / pane_count;
 
 				      // slow down at the first and last pane
-				      if ((current_pane == 0 && ev.gesture.direction == 'right') ||
+				      if ((current_pane === 0 && ev.gesture.direction === 'right') ||
 				        (current_pane == pane_count - 1 && ev.gesture.direction == 'left')) {
-				        drag_offset *= .4;
+				        drag_offset *= 0.4;
 				      }
 
 				      scope.setContainerOffset(drag_offset + pane_offset);
@@ -128,7 +121,7 @@ angular.module('swipeLi')
 				      }
 				      break;
 			    }
-			  }
+			  };
 
 				// Register a new hammer instance
 				scope.id = hammerRemote.register(
