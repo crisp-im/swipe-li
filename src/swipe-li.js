@@ -16,18 +16,11 @@ angular.module('swipeLi')
       restrict: 'A',
 
       link: function (scope, iElement, iAttrs) {
-      	// Template url for the various panes
-
-      	// Reset back to the content pane on complete
-      	scope.resetToContent = scope.$eval(iAttrs.resetToContent);
-      	// Swipe intent
-      	scope.intent = scope.$eval(iAttrs.intent);
 
 				// On swipe complete
 				scope.onComplete = function (type) {
 					$timeout(function () {
-						if (scope.resetToContent)
-							scope.showPane(1, true);
+						scope.showPane(1, true);
 						scope.$apply(iAttrs[type]);
 					}, 300);
 				};
@@ -122,9 +115,7 @@ angular.module('swipeLi')
 
 				    // More then 50% moved, navigate
 				    case 'release':
-				    	if (!scope.intent && Math.abs(ev.gesture.deltaX) < pane_width) {
-				    		scope.showPane(current_pane, true);
-				    	} else if (Math.abs(ev.gesture.deltaX) > pane_width / 2) {
+				    	if (Math.abs(ev.gesture.deltaX) > pane_width / 2) {
 				        if (ev.gesture.direction == 'right') {
 				        	scope.showPane(0, true);
 				          scope.onComplete('accept');
