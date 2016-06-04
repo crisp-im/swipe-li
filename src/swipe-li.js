@@ -16,8 +16,10 @@ angular.module('swipeLi')
 
       link: function (scope, iElement, iAttrs) {
 
+      	var swipeDirective = {};
+
         // On swipe complete
-        scope.onComplete = function (type) {
+        swipeDirective.onComplete = function (type) {
           $timeout(function () {
             scope.showPane(1, true);
             scope.$apply(iAttrs[type]);
@@ -41,22 +43,22 @@ angular.module('swipeLi')
         var startCoords = {
         	x : 0,
         	y : 0
-        }
+        };
 
         var is_moving = false;
 
-        scope.init = function () {
-          setPaneDimensions();
+        swipeDirective.init = function () {
+          swipeDirective.setPaneDimensions();
           // Display the content pane by default
-          scope.showPane(1, false);
+          swipeDirective.showPane(1, false);
           // Handle resize and orientation change
           angular.element($window).on('load resize orientationchange', function () {
-            setPaneDimensions();
+            swipeDirective.setPaneDimensions();
           });
         };
 
         // Set the pane dimensions and scale the container
-        function setPaneDimensions() {
+        swipeDirective.setPaneDimensions = function() {
           pane_width = element[0].offsetWidth;
           angular.forEach(panes, function (pane) {
             angular.element(pane).css({width : pane_width + 'px'});
@@ -65,16 +67,16 @@ angular.module('swipeLi')
         }
 
         // Show pane by index
-        scope.showPane = function (index, animate) {
+        swipeDirective.showPane = function (index, animate) {
           // between the bounds
           index = Math.max(0, Math.min(index, pane_count - 1));
           current_pane = index;
 
           var offset = -((100 / pane_count) * current_pane);
-          scope.setContainerOffset(offset, animate);
+          swipeDirective.setContainerOffset(offset, animate);
         };
 
-        scope.setContainerOffset = function (percent, animate) {
+        swipeDirective.setContainerOffset = function (percent, animate) {
           container.removeClass('animate');
           if (animate) {
             container.addClass('animate');
@@ -83,7 +85,7 @@ angular.module('swipeLi')
           container.css('transform', 'translate3d(' + percent + '%,0,0) scale3d(1,1,1)');
         };
 
-        scope.init();
+        swipeDirective.init();
 
         $swipe.bind(angular.element(element[0]), {
           start : function(coords, event) {
@@ -94,12 +96,12 @@ angular.module('swipeLi')
           cancel : function(event) {
           	//event.preventDefault();
             is_moving = false;
-            scope.showPane(current_pane, true);
+            swipeDirective.showPane(current_pane, true);
           },
           end : function(coords, event) {
           	//event.preventDefault();
           	is_moving = false;
-            scope.showPane(current_pane, true);
+            swipeDirective.showPane(current_pane, true);
           },
           move : function(coords, event) {
 
@@ -108,19 +110,17 @@ angular.module('swipeLi')
           	var deltaY = Math.abs(coords.y - startCoords.y);
           	var deltaX = (coords.x - startCoords.x);
 
-          	console.log(deltaX);
-
- 						if (is_moving && deltaY < MAX_VERTICAL_DISTANCE
- 							&& deltaY / deltaX < MAX_VERTICAL_RATIO) {
+ 						if (is_moving && deltaY < MAX_VERTICAL_DISTANCE &&
+ 							deltaY / deltaX < MAX_VERTICAL_RATIO) {
 
 
  							if ((Math.abs(deltaX) > MIN_HORIZONTAL_DISTANCE)) {
  								if (deltaX > 0) {
- 									scope.showPane(0, true);
-              		scope.onComplete('accept');
+ 									swipeDirective.showPane(0, true);
+              		swipeDirective.onComplete('accept');
  								} else {
- 									scope.showPane(2, true);
-              		scope.onComplete('reject');
+ 									swipeDirective.showPane(2, true);
+              		swipeDirective.onComplete('reject');
  								}
  							} else {
 		          	var pane_offset = -(100 / pane_count) * current_pane;
@@ -131,7 +131,7 @@ angular.module('swipeLi')
 		              drag_offset *= 0.4;
 		            }
 
-		         		scope.setContainerOffset(drag_offset + pane_offset);
+		         		swipeDirective.setContainerOffset(drag_offset + pane_offset);
 	         		}
          		}
          		else {
@@ -141,5 +141,5 @@ angular.module('swipeLi')
           }
         }, ["touch", "mouse"]);
       }
-    }
+    };
   }]);
