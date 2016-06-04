@@ -13,7 +13,6 @@
   "dependencies": {
     "angular": "1.2.14",
     "angular-touch": "1.2.14",
-    "hammerjs": "~1.0.6",
-    "modernizr": "~2.7.1"
+    "hammerjs": "~1.0.6"
   }
 }
