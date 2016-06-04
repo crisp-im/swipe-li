@@ -9,9 +9,5 @@
   "license": "MIT",
    "ignore": [
     "example"
-  ],
-  "dependencies": {
-    "angular": "1.2.14",
-    "angular-touch": "1.2.14"
-  }
+  ]
 }
