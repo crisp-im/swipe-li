@@ -14,25 +14,10 @@ angular.module('swipeLi')
   	'use strict';
     return {
       restrict: 'A',
-      template:
-	      	'<div class="swipe-li">'
-	      + 	'<ul>'
-	    	+			'<li class="pane accept">'
-	    	+				'<ng-include src="acceptContent"></ng-include>'
-	    	+			'</li>'
-	    	+			'<li class="">'
-	    	+				'<ng-include src="mainContent"></ng-include>'
-	    	+			'</li>'
-				+   	'<li class="pane reject">'
-				+				'<ng-include src="rejectContent"></ng-include></div></li>'
-				+			'</li>'
-	  		+		'</ul>'
-				+	'</div>',
+
       link: function (scope, iElement, iAttrs) {
       	// Template url for the various panes
-      	scope.mainContent = scope.$eval(iAttrs.mainContent);
-      	scope.acceptContent = scope.$eval(iAttrs.acceptContent);
-      	scope.rejectContent = scope.$eval(iAttrs.rejectContent);
+
       	// Reset back to the content pane on complete
       	scope.resetToContent = scope.$eval(iAttrs.resetToContent);
       	// Swipe intent
