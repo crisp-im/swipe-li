@@ -21,7 +21,7 @@ angular.module('swipeLi')
         // On swipe complete
         swipeDirective.onComplete = function (type) {
           $timeout(function () {
-            scope.showPane(1, true);
+            swipeDirective.showPane(1, true);
             scope.$apply(iAttrs[type]);
           }, 300);
         };
