@@ -64,7 +64,7 @@ angular.module('swipeLi')
             angular.element(pane).css({width : pane_width + 'px'});
           });
           angular.element(container).css({width : pane_width * pane_count + 'px'});
-        }
+        };
 
         // Show pane by index
         swipeDirective.showPane = function (index, animate) {
