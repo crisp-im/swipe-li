@@ -30,7 +30,7 @@ angular.module('swipeLi')
         // animation between panes happens with css transitions
 
 		    var MAX_VERTICAL_DISTANCE = 75;
-		    var MIN_HORIZONTAL_DISTANCE = 160;
+		    var MIN_HORIZONTAL_DISTANCE = 75;
 		    var MAX_VERTICAL_RATIO = 0.3;
 
         var element = iElement.find('div');
