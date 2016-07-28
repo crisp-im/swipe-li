@@ -87,17 +87,6 @@ angular.module('swipeLi')
 
         swipeDirective.init();
 
-        $swipe.bind(angular.element(document), {
-          cancel : function () {
-            is_moving = false;
-            swipeDirective.showPane(current_pane, true);
-          },
-          end : function () {
-            is_moving = false;
-            swipeDirective.showPane(current_pane, true);
-          }
-        }, ["touch", "mouse"]);
-
         $swipe.bind(angular.element(element[0]), {
           start : function(coords, event) {
           	startCoords = coords;
