@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
 var connect = require('gulp-connect');
 var watch = require('gulp-watch');
 var colors = require('colors');
@@ -12,8 +11,7 @@ gulp.task('css', function() {
 
 gulp.task('js', function() {
   return gulp.src('./src/*.js')
-    .pipe(concat('swipe-li.min.js'))
-    .pipe(uglify())
+    .pipe(concat('swipe-li.js'))
     .pipe(gulp.dest('./dist/'));
 });
 
