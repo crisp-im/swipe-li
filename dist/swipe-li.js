@@ -48,7 +48,7 @@ angular.module('swipeLi')
 
       link: function (scope, iElement, iAttrs) {
 
-      	var swipeDirective = {};
+        var swipeDirective = {};
 
         // On swipe complete
         swipeDirective.onComplete = function (type) {
@@ -61,9 +61,9 @@ angular.module('swipeLi')
         // Basic 3 Pane Carousel
         // animation between panes happens with css transitions
 
-		    var MAX_VERTICAL_DISTANCE = 75;
-		    var MIN_HORIZONTAL_DISTANCE = 180;
-		    var MAX_VERTICAL_RATIO = 0.3;
+        var MAX_VERTICAL_DISTANCE = 75;
+        var MIN_HORIZONTAL_DISTANCE = 150;
+        var MAX_VERTICAL_RATIO = 0.3;
 
         var element = iElement.find('div');
         var container = iElement.find('ul');
@@ -71,10 +71,11 @@ angular.module('swipeLi')
         var pane_width = 0;
         var pane_count = 3;
         var current_pane = 0;
+        var auto_stop_timeout = null;
 
         var startCoords = {
-        	x : 0,
-        	y : 0
+          x : 0,
+          y : 0
         };
 
         var is_moving = false;
@@ -117,57 +118,74 @@ angular.module('swipeLi')
           container.css('transform', 'translate3d(' + percent + '%,0,0) scale3d(1,1,1)');
         };
 
+        swipeDirective.unscheduleAutoStop = function () {
+          if (auto_stop_timeout !== null) {
+            $timeout.cancel(auto_stop_timeout);
+          }
+        }
+
+        swipeDirective.scheduleAutoStop = function (instance) {
+          this.unscheduleAutoStop();
+
+          auto_stop_timeout = $timeout(function() {
+            instance.cancel();
+          }, 500);
+        }
+
         swipeDirective.init();
 
         $swipe.bind(angular.element(element[0]), {
           start : function(coords, event) {
-          	startCoords = coords;
-          	event.preventDefault();
-           	is_moving = true;
+            startCoords = coords;
+            event.preventDefault();
+            is_moving = true;
+
+            swipeDirective.scheduleAutoStop(this);
           },
           cancel : function(event) {
+            this.end();
+          },
+          end : function(coords, event) {
+            swipeDirective.unscheduleAutoStop();
+
             is_moving = false;
             swipeDirective.showPane(current_pane, true);
           },
-          end : function(coords, event) {
-          	is_moving = false;
-            swipeDirective.showPane(current_pane, true);
-          },
           move : function(coords, event) {
+            event.preventDefault();
 
-          	event.preventDefault();
+            var deltaY = Math.abs(coords.y - startCoords.y);
+            var deltaX = (coords.x - startCoords.x);
 
-          	var deltaY = Math.abs(coords.y - startCoords.y);
-          	var deltaX = (coords.x - startCoords.x);
-
- 						if (is_moving && deltaY < MAX_VERTICAL_DISTANCE &&
- 							deltaY / deltaX < MAX_VERTICAL_RATIO) {
+            if (is_moving && deltaY < MAX_VERTICAL_DISTANCE &&
+              deltaY / deltaX < MAX_VERTICAL_RATIO) {
 
 
- 							if ((Math.abs(deltaX) > MIN_HORIZONTAL_DISTANCE)) {
- 								if (deltaX > 0) {
- 									swipeDirective.showPane(0, true);
-              		swipeDirective.onComplete('accept');
- 								} else {
- 									swipeDirective.showPane(2, true);
-              		swipeDirective.onComplete('reject');
- 								}
- 							} else {
-		          	var pane_offset = -(100 / pane_count) * current_pane;
-		          	var drag_offset = ((100 / pane_width) * deltaX) / pane_count;
+              if ((Math.abs(deltaX) > MIN_HORIZONTAL_DISTANCE)) {
+                if (deltaX > 0) {
+                  swipeDirective.showPane(0, true);
+                  swipeDirective.onComplete('accept');
+                } else {
+                  swipeDirective.showPane(2, true);
+                  swipeDirective.onComplete('reject');
+                }
+              } else {
+                var pane_offset = -(100 / pane_count) * current_pane;
+                var drag_offset = ((100 / pane_width) * deltaX) / pane_count;
 
-		          	if (current_pane === 0 && deltaX > 0 ||
-		          		(deltaX < 0 && current_pane == pane_count - 1)) {
-		              drag_offset *= 0.4;
-		            }
+                if (current_pane === 0 && deltaX > 0 ||
+                  (deltaX < 0 && current_pane == pane_count - 1)) {
+                  drag_offset *= 0.4;
+                }
 
-		         		swipeDirective.setContainerOffset(drag_offset + pane_offset);
-	         		}
-         		}
-         		else {
-         			is_moving = false;
-         		}
+                swipeDirective.setContainerOffset(drag_offset + pane_offset);
+              }
+            }
+            else {
+              is_moving = false;
+            }
 
+            swipeDirective.scheduleAutoStop(this);
           }
         }, ["touch", "mouse"]);
       }
